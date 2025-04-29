@@ -52,7 +52,7 @@ app.post('/aluno/novo', async (req, res) => {
     }
 });
 
-app.get('/quiz/pergunta', async (req, res) => {
+app.post('/quiz/pergunta', async (req, res) => {
     try {
         const { questao, opcao1, opcao2, opcao3, opcao4, correta, dificuldade } = req.body;
         await sql
@@ -65,18 +65,11 @@ app.get('/quiz/pergunta', async (req, res) => {
     }
 });
 
-app.post('/quiz/responder', async (req, res) => {
+app.get('/quiz/responder', async (req, res) => {
     try {
-        
-        const { resposta } = req.body;
         const consulta = await sql
-            `SELECT * FROM perguntas ORDER BY RANDOM(LIMIT 40);`
-
-        if (consulta.rows.length > 0 && consulta.rows[0].correta === resposta) {
-            return res.status(200).json(consulta);
-        } else {
-            return res.status(401).json('Resposta incorreta, tente novamente!');
-        }
+            `SELECT * FROM perguntas ORDER BY RANDOM() LIMIT 40;`
+            return res.status(200).json(consulta)
     } catch (error) {
         console.log(error)
         res.status(500).json('Erro ao validar resposta');
